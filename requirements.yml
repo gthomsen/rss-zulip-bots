@@ -1,0 +1,6 @@
+name: zulip-bots
+channels:
+  - defaults
+dependencies:
+  - feedparser
+  - zulip

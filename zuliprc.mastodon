@@ -1,0 +1,5 @@
+[api]
+; Mastodon bot's key.
+key=MASTODON_BOT_API_KEY
+email=MASTODON_BOT_EMAIL_ADDRESS
+site=ZULIP_SERVER_URL

@@ -1,0 +1,5 @@
+[api]
+; Discourse bot's key.
+key=DISCOURSE_BOT_API_KEY
+email=DISCOURSE_BOT_EMAIL_ADDRESS
+site=wandering-ZULIP_SERVER_URL
