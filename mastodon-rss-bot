@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #
-# RSS integration for Zulip
+# RSS integration for Zulip modified to format RSS entries sourced from
+# a Mastodon server's RSS feed (server-wide, user-specific, or tag-based).
 #
 
 import argparse
@@ -177,7 +178,28 @@ def send_zulip(entry: Any, feed_name: str) -> Dict[str, Any]:
     if opts.unwrap:
         body = unwrap_text(body)
 
-    content = f"**[{entry.title}]({entry.link})**\n{strip_tags(body)}\n{entry.link}"
+    parsed_link = urllib.parse.urlparse( entry.link )
+    author      = parsed_link.path.split( "/" )[1]
+
+    #
+    # NOTE: Mastodon post's do not include a title field.
+    #
+
+    # Markdown link from server this post originated on to the post itself.
+    post_link   = f"[{parsed_link.netloc}]({entry.link})"
+
+    # Markdown link from the user's handle to their feed.
+    author_link = f"[{author}]({parsed_link.scheme}://{parsed_link.netloc}/{author})"
+
+    # Drop the trailing "-User Name (@handle) <date>" that is appended to the
+    # post.
+    body        = "-".join( body.split( "-" )[:-1] ).strip()
+
+    # Server: <post link>
+    # Author: <handle link>
+    # Posted: <date>
+    # <post>
+    content = f"Server: {post_link}\nAuthor: {author_link}\nPosted: {entry.published}\n{strip_tags(body)}\n"
 
     if opts.math:
         content = content.replace("$", "$$")
